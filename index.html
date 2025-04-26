@@ -4,6 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>To-Do List with React</title>
+  <style>
+    /* Some basic styling */
+    li {
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+    .completed {
+      text-decoration: line-through;
+      color: gray;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -46,15 +57,23 @@
       );
     }
 
-    // TaskList component: displays the list of tasks with a remove button
-    function TaskList({ tasks, removeTask }) {
+    // TaskList component: displays the list of tasks with remove and toggle complete
+    function TaskList({ tasks, toggleTaskComplete, removeTask }) {
       return (
         <section>
           <ul>
             {tasks.map((task, index) => (
               <li key={index}>
-                {task}
-                <button onClick={() => removeTask(index)} style={{ marginLeft: "10px" }}>
+                <span
+                  onClick={() => toggleTaskComplete(index)}
+                  className={task.completed ? 'completed' : ''}
+                >
+                  {task.text}
+                </span>
+                <button 
+                  onClick={() => removeTask(index)}
+                  style={{ marginLeft: "10px" }}
+                >
                   Remove
                 </button>
               </li>
@@ -71,8 +90,19 @@
 
       function addTask() {
         if (newTask.trim() === '') return;
-        setTasks([...tasks, newTask]);
+        const taskObject = { text: newTask, completed: false };
+        setTasks([...tasks, taskObject]);
         setNewTask('');
+      }
+
+      function toggleTaskComplete(indexToToggle) {
+        const updatedTasks = tasks.map((task, index) => {
+          if (index === indexToToggle) {
+            return { ...task, completed: !task.completed };
+          }
+          return task;
+        });
+        setTasks(updatedTasks);
       }
 
       function removeTask(indexToRemove) {
@@ -86,7 +116,11 @@
             setNewTask={setNewTask}
             addTask={addTask}
           />
-          <TaskList tasks={tasks} removeTask={removeTask} />
+          <TaskList 
+            tasks={tasks} 
+            toggleTaskComplete={toggleTaskComplete} 
+            removeTask={removeTask} 
+          />
         </div>
       );
     }
