@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>To-Do List with React Components</title>
+  <title>To-Do List with React</title>
 </head>
 <body>
   <header>
@@ -46,13 +46,18 @@
       );
     }
 
-    // TaskList component: displays the list of tasks
-    function TaskList({ tasks }) {
+    // TaskList component: displays the list of tasks with a remove button
+    function TaskList({ tasks, removeTask }) {
       return (
         <section>
           <ul>
             {tasks.map((task, index) => (
-              <li key={index}>{task}</li>
+              <li key={index}>
+                {task}
+                <button onClick={() => removeTask(index)} style={{ marginLeft: "10px" }}>
+                  Remove
+                </button>
+              </li>
             ))}
           </ul>
         </section>
@@ -70,6 +75,10 @@
         setNewTask('');
       }
 
+      function removeTask(indexToRemove) {
+        setTasks(tasks.filter((_, index) => index !== indexToRemove));
+      }
+
       return (
         <div>
           <TaskInput 
@@ -77,7 +86,7 @@
             setNewTask={setNewTask}
             addTask={addTask}
           />
-          <TaskList tasks={tasks} />
+          <TaskList tasks={tasks} removeTask={removeTask} />
         </div>
       );
     }
