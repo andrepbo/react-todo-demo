@@ -1,25 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Todo List</title>
-
-    <!-- Favicon -->
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List with React Components</title>
 </head>
 <body>
-    <header>
-        <h1>To-do List</h1>
-    </header>
-    <main>
+  <header>
+    <h1>React To-Do List</h1>
+  </header>
+
+  <main>
+    <section id="root"></section>
+  </main>
+
+  <footer>
+    <p>© 2025 To-Do App. All rights reserved.</p>
+  </footer>
+
+  <!-- Load React, ReactDOM, and Babel -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Our React App -->
+  <script type="text/babel">
+
+    const { useState } = React;
+
+    // TaskInput component: handles input field and add button
+    function TaskInput({ newTask, setNewTask, addTask }) {
+      return (
         <section>
-            <input type="text" id="task" placeholder="New Task">
-            <button onclick="addTask()">Add</button>
-            <ul id="list"></ul>
+          <form onSubmit={(e) => { e.preventDefault(); addTask(); }}>
+            <input 
+              type="text"
+              value={newTask}
+              onChange={(e) => setNewTask(e.target.value)}
+              placeholder="New task"
+              aria-label="Task input"
+            />
+            <button type="submit">Add</button>
+          </form>
         </section>
-    </main>
-    <script src="script.js"></script>
+      );
+    }
+
+    // TaskList component: displays the list of tasks
+    function TaskList({ tasks }) {
+      return (
+        <section>
+          <ul>
+            {tasks.map((task, index) => (
+              <li key={index}>{task}</li>
+            ))}
+          </ul>
+        </section>
+      );
+    }
+
+    // Main App component
+    function App() {
+      const [tasks, setTasks] = useState([]);
+      const [newTask, setNewTask] = useState('');
+
+      function addTask() {
+        if (newTask.trim() === '') return;
+        setTasks([...tasks, newTask]);
+        setNewTask('');
+      }
+
+      return (
+        <div>
+          <TaskInput 
+            newTask={newTask}
+            setNewTask={setNewTask}
+            addTask={addTask}
+          />
+          <TaskList tasks={tasks} />
+        </div>
+      );
+    }
+
+    // Render App component into the DOM
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+  </script>
 </body>
 </html>
